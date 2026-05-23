@@ -5,18 +5,22 @@
 
 namespace stopwatch {
 
-struct FormattedTime {
-    int hours;
-    int minutes;
-    int seconds;
-    int centiseconds;
+struct TimeParts {
+    long hours;         // unbounded (>= 0)
+    int  minutes;       // 0..59
+    int  seconds;       // 0..59
+    int  centiseconds;  // 0..99
 };
 
-// Breaks a duration into hours/minutes/seconds/centiseconds.
-// Negative inputs are clamped to zero. Hours are capped at 99.
-FormattedTime decompose(std::chrono::steady_clock::duration d);
+// Decomposes a duration into hours, minutes, seconds, centiseconds.
+// Negative durations are clamped to zero.
+TimeParts decompose(std::chrono::steady_clock::duration d);
 
-// "HH:MM:SS.cs" representation, useful for the compact fallback layout.
-std::string format_compact(std::chrono::steady_clock::duration d);
+// Whole-second count of the duration, clamped to zero.
+long long total_seconds_count(std::chrono::steady_clock::duration d);
+
+// Canonical HH:MM:SS.cs textual form, used for the program's stdout output.
+// Hours always occupy at least two digits and grow naturally beyond 99.
+std::string format_canonical(std::chrono::steady_clock::duration d);
 
 } // namespace stopwatch
