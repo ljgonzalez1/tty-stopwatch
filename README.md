@@ -65,7 +65,7 @@ Desktop notifications use the built-in `osascript`.
 ## Build and install
 
 ```bash
-git clone https://github.com/<your-account>/tty-stopwatch.git
+git clone https://git.ljgonzalez.cl/ljgonzalez/tty-stopwatch
 cd tty-stopwatch
 make
 sudo make install
