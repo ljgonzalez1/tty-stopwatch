@@ -4,6 +4,8 @@ A terminal stopwatch and countdown timer with a big-digit clock face,
 written in modern C++17. In the spirit of [`tty-clock`][1], but for measuring
 elapsed time instead of displaying the wall clock.
 
+![tty-stopwatch-screenshot](assets/screenshot.png)
+
 Unlike the original, this version has **no third-party library dependency**.
 The terminal interface is built directly on POSIX primitives (`termios`,
 `poll`, `ioctl`, `read`, `write`) plus ANSI/VT100 escape sequences, and
