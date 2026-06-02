@@ -60,6 +60,21 @@ There is no library to match across libc flavors, so the only thing that
 distinguishes one Linux binary from another is the CPU architecture it was
 compiled for.
 
+
+### In summary
+| OS & Architecture | Supported |
+|---|---|
+| Debian / Ubuntu amd64 | Yes |
+| Debian / Ubuntu arm64 | Not tested yet. Should be. |
+| Debian / Ubuntu armhf | Not tested yet. Should be. |
+| Red Hat / Fedora / RHEL | Not tested yet. Should be. |
+| Arch | Not tested yet. Should be. |
+| SUSE / openSUSE | Not tested yet. Should be. |
+| Linux i386 | No |
+| macOS amd64 | Not tested yet. Should be. |
+| macOS arm64 | Not tested yet. Should be. |
+| Windows | No |
+
 ## Build dependencies
 
 To **run** the binary you need nothing beyond the binary itself. The packages
