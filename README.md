@@ -92,6 +92,10 @@ sudo apt install build-essential
 
 `build-essential` already provides `g++` and `make`. Nothing else is required.
 
+Building a `.deb` with `make deb` (see below) needs nothing extra either: the
+`dpkg` package is the only requirement, and it ships with every Debian-based
+system. No `dpkg-dev`, `debhelper`, or `build-essential` add-on is involved.
+
 ### Fedora / RHEL / openSUSE (and other rpm-based distributions)
 
 Install a C++ compiler and make:
@@ -183,6 +187,37 @@ make macos-universal # equivalent to: make MACOS_UNIVERSAL=1
 A fully static build is cleanest on musl (Alpine) because the program uses no
 name-service (NSS) facilities; the resulting executable carries everything it
 needs.
+
+### Debian package (`.deb`)
+
+On a Debian-based system you can build a native `.deb` and manage it with the
+normal package tools. Building the package needs no root and no extra
+packages — only `dpkg`, which is always present (version 1.19 or newer, i.e.
+Debian 10+ / Ubuntu 18.10+, so that file ownership can be recorded without
+elevated privileges):
+
+```bash
+make deb
+```
+
+This writes `dist/tty-stopwatch_1.1.0-1_<arch>.deb`, where `<arch>` is the
+architecture of the build host as reported by `dpkg --print-architecture`
+(`amd64`, `arm64`, or `armhf`). The package installs the binary to
+`/usr/bin/tty-stopwatch`, exactly like `make install`, and includes the usual
+`copyright` and `changelog.Debian.gz` under `/usr/share/doc/tty-stopwatch/`.
+Install and remove it the same way as any package from the archive:
+
+```bash
+sudo apt install ./dist/tty-stopwatch_1.1.0-1_amd64.deb   # match your arch
+sudo apt remove tty-stopwatch
+```
+
+`make deb` itself does not require `sudo`; only the `apt` install and remove
+steps do. The packaged binary links the C++ runtime statically and declares a
+dependency only on `libc6`, so it runs on any Debian-based release of the same
+architecture. (If `make deb` is ever run under `sudo`, the `dist/` and `build/`
+directories and the built binary are handed back to the invoking user, so
+nothing in the working tree is left owned by root.)
 
 ## Usage
 
