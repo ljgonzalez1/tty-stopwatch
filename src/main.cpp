@@ -4,14 +4,20 @@
 #include "TerminalLauncher.h"
 #include "TimeFormatter.h"
 
-#include <ncurses.h>
-
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
 
+// Program entry point.
+//
+// Responsibilities are deliberately thin: parse the command line, handle the
+// help/error short-circuits, make sure we have a controlling terminal, then
+// hand control to Application and print the final time. All terminal state is
+// owned by Application (through its Terminal member), whose destructor always
+// restores the tty even when an exception unwinds through this function, so
+// there is nothing terminal-specific to clean up here.
 int main(int argc, char* argv[]) {
     using namespace stopwatch;
 
@@ -27,9 +33,9 @@ int main(int argc, char* argv[]) {
         return EXIT_SUCCESS;
     }
 
-    // When invoked without any terminal at all (e.g. double-clicked from
-    // a file manager on Linux), re-exec inside the default terminal
-    // emulator. On macOS the program is always run from a terminal, so
+    // When invoked without any terminal at all (e.g. double-clicked from a
+    // file manager on Linux), re-exec inside the default terminal emulator.
+    // On macOS the program is always run from a terminal, so
     // exec_in_terminal() is a no-op there.
     if (!TerminalLauncher::has_terminal()) {
         TerminalLauncher::exec_in_terminal(argc, argv);
@@ -39,21 +45,18 @@ int main(int argc, char* argv[]) {
     }
 
     std::chrono::steady_clock::duration to_print{};
-    bool should_print = !opts.no_output;
-    int  exit_code    = EXIT_SUCCESS;
+    const bool should_print = !opts.no_output;
+    int        exit_code    = EXIT_SUCCESS;
 
     try {
         Application app(opts);
         exit_code = app.run();
         to_print  = app.final_time();
-        // The Application's destructor tears down the ncurses session
-        // when this scope exits.
+        // Application's destructor restores the terminal as this scope exits.
     } catch (const std::exception& e) {
-        endwin();
         std::fprintf(stderr, "tty-stopwatch: %s\n", e.what());
         return EXIT_FAILURE;
     } catch (...) {
-        endwin();
         std::fprintf(stderr, "tty-stopwatch: unknown error\n");
         return EXIT_FAILURE;
     }

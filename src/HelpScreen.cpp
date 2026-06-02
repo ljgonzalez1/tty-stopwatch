@@ -80,7 +80,8 @@ void print(std::FILE* out, bool color) {
     heading(out, p, "Options:");
     option(out, p, "-h", "--help",          "",          "Show this help and exit.");
     option(out, p, "-t", "--timer",         "DURATION",  "Run as countdown for DURATION (see below).");
-    option(out, p, "-r", "--reverse",       "",          "Show timer counting up (requires -t).");
+    option(out, p, "-u", "--until",         "HH:MM[:SS]","Count down to the next 24h wall-clock time.");
+    option(out, p, "-r", "--reverse",       "",          "Show timer counting up (requires -t or -u).");
     option(out, p, "-H", "--no-hour",       "",          "Hide hours; minutes grow without bound.");
     option(out, p, "-S", "--seconds-only",  "",          "Show only seconds, growing without bound.");
     option(out, p, "-B", "--blink",         "",          "Blink the colon separators each second.");
@@ -96,6 +97,15 @@ void print(std::FILE* out, bool color) {
         "    Combine h/H, m/M and s/S units in any order, with no spaces.\n"
         "    Examples: %s1h30m45s%s, %s90s%s, %s5m%s, %s2h%s, %s30m5h%s, %s45m%s.\n\n",
         p.example, p.reset, p.example, p.reset, p.example, p.reset,
+        p.example, p.reset, p.example, p.reset, p.example, p.reset);
+
+    heading(out, p, "Wall-clock target (-u):");
+    std::fprintf(out,
+        "    Give a time of day in 24-hour %sHH:MM%s or %sHH:MM:SS%s form. The\n"
+        "    countdown runs until the next occurrence of that time: if it has\n"
+        "    already passed today, the target rolls over to tomorrow.\n"
+        "    Examples: %s-u 20:32%s, %s--until 06:00:00%s, %s-u 9:05%s.\n\n",
+        p.arg, p.reset, p.arg, p.reset,
         p.example, p.reset, p.example, p.reset, p.example, p.reset);
 
     heading(out, p, "Controls:");
@@ -120,6 +130,7 @@ void print(std::FILE* out, bool color) {
     const struct { const char* cmd; const char* desc; } examples[] = {
         {"tty-stopwatch",                  "Plain stopwatch counting upward."},
         {"tty-stopwatch -t 5m",            "Five-minute countdown timer."},
+        {"tty-stopwatch -u 20:32",         "Count down to the next 20:32."},
         {"tty-stopwatch -t 1h30m -c -B",   "90-minute timer with system clock and blinking colons."},
         {"tty-stopwatch -t 30s -r",        "30-second timer shown counting up."},
         {"tty-stopwatch -nS",              "Monochrome stopwatch, seconds only."},
