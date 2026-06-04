@@ -65,7 +65,7 @@ compiled for.
 | OS & Architecture | Supported |
 |---|---|
 | Debian / Ubuntu amd64 | Yes |
-| Debian / Ubuntu arm64 | Not tested yet. Should be. |
+| Debian / Ubuntu arm64 | Yes |
 | Debian / Ubuntu armhf | Not tested yet. Should be. |
 | Red Hat / Fedora / RHEL | Not tested yet. Should be. |
 | Arch | Not tested yet. Should be. |
