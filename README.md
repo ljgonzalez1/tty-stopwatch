@@ -67,9 +67,10 @@ compiled for.
 | Debian / Ubuntu amd64 | Yes |
 | Debian / Ubuntu arm64 | Yes |
 | Debian / Ubuntu armhf | Not tested yet. Should be. |
-| Red Hat / Fedora / RHEL | Not tested yet. Should be. |
-| Arch | Not tested yet. Should be. |
-| SUSE / openSUSE | Not tested yet. Should be. |
+| Red Hat / Fedora / RHEL | Yes |
+| Alpine | Yes |
+| Arch | Yes |
+| SUSE / openSUSE | Yes |
 | Linux i386 | No |
 | macOS amd64 | Not tested yet. Should be. |
 | macOS arm64 | Not tested yet. Should be. |
