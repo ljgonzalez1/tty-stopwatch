@@ -72,8 +72,8 @@ compiled for.
 | Alpine | amd64, i386, arm64 | Yes |
 | Arch | amd64, i386, arm64 | Yes |
 | SUSE / OpenSUSE | amd64, i386, arm64 | Yes |
-| MacOS | amd64, arm64 | Not tested yet. Should be. |
-| MacOS | i386 | Shouldn't. Worth trying if you have the device. |
+| MacOS | amd64 (the intel ones), arm64 (M series) | Not tested yet. Should be. |
+| MacOS | i386 | Shouldn't. Worth trying if you have a 2006 or earlier device. |
 | Windows (Windows NT) | Any | No |
 
 ---
