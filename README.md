@@ -67,12 +67,13 @@ compiled for.
 | OS | Architecture | Supported |
 |---|---|---|
 | Debian / Ubuntu | amd64, i386, arm64 | Yes |
-| Any distro... | armhf | Not tested yet. Should be. |
+| Almost any Linux distro... | armhf | Not tested yet. Should be. |
 | Red Hat / Fedora / RHEL | amd64, i386, arm64 | Yes |
 | Alpine | amd64, i386, arm64 | Yes |
 | Arch | amd64, i386, arm64 | Yes |
 | SUSE / OpenSUSE | amd64, i386, arm64 | Yes |
-| MacOS | amd64 (the intel ones), arm64 (M series) | Not tested yet. Should be. |
+| MacOS | amd64 (the intel ones) | Not tested yet. Should be. |
+| MacOS | arm64 (M series) | Yes |
 | MacOS | i386 | Shouldn't. Worth trying if you have a 2006 or earlier device. |
 | Windows (Windows NT) | Any | No |
 
