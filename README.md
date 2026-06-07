@@ -41,13 +41,15 @@ beyond itself.
 - **No locale dependency.** All rendering uses ASCII; output uses 24-hour
   numeric time and never depends on `LANG` / `LC_*`.
 
+---
+
 ## Supported platforms (portability sign-off)
 
 This codebase is plain, architecture-independent C++17 over POSIX. It is
 explicitly intended to build and run, with no source changes, on the
 following two groups:
 
-- **Linux**: amd64 (x86-64), arm64 (aarch64), and armhf (32-bit ARM). A single
+- **Linux**: amd64 (x86-64), arm64 (aarch64), i386 (x86) and armhf (32-bit ARM). A single
   binary per architecture is designed to run on Alpine-based (musl),
   Debian-based, and Arch-based systems alike, with no extra packages — see
   *Self-contained binaries* below. Desktop notifications work on any desktop
@@ -62,19 +64,19 @@ compiled for.
 
 
 ### In summary
-| OS & Architecture | Supported |
-|---|---|
-| Debian / Ubuntu amd64 | Yes |
-| Debian / Ubuntu arm64 | Yes |
-| Debian / Ubuntu armhf | Not tested yet. Should be. |
-| Red Hat / Fedora / RHEL | Yes |
-| Alpine | Yes |
-| Arch | Yes |
-| SUSE / openSUSE | Yes |
-| Linux i386 | No |
-| macOS amd64 | Not tested yet. Should be. |
-| macOS arm64 | Not tested yet. Should be. |
-| Windows | No |
+| OS | Architecture | Supported |
+|---|---|---|
+| Debian / Ubuntu | amd64, i386, arm64 | Yes |
+| Any distro... | armhf | Not tested yet. Should be. |
+| Red Hat / Fedora / RHEL | amd64, i386, arm64 | Yes |
+| Alpine | amd64, i386, arm64 | Yes |
+| Arch | amd64, i386, arm64 | Yes |
+| SUSE / OpenSUSE | amd64, i386, arm64 | Yes |
+| MacOS | amd64, arm64 | Not tested yet. Should be. |
+| MacOS | i386 | Shouldn't. Worth trying if you have the device. |
+| Windows (Windows NT) | Any | No |
+
+---
 
 ## Build dependencies
 
@@ -137,6 +139,8 @@ xcode-select --install
 
 There is no extra package to install for notifications on either architecture;
 `osascript` ships with the operating system.
+
+---
 
 ## Build and install
 
@@ -219,6 +223,8 @@ dependency only on `libc6`, so it runs on any Debian-based release of the same
 architecture. (If `make deb` is ever run under `sudo`, the `dist/` and `build/`
 directories and the built binary are handed back to the invoking user, so
 nothing in the working tree is left owned by root.)
+
+---
 
 ## Usage
 
@@ -341,6 +347,8 @@ tty-stopwatch -s -t 25m                # screensaver-style Pomodoro
 elapsed=$(tty-stopwatch -t 10s)        # capture into a variable
 ```
 
+---
+
 ## Behaviour notes
 
 ### Double-click launches (Linux only)
@@ -380,38 +388,13 @@ Every step is best-effort and silent: a missing notification service causes no
 error and nothing leaks onto the rendered screen. The bell always fires, so
 there is always at least one signal.
 
-## Project layout
+---
 
-```
-tty-stopwatch/
-├── Makefile
-├── README.md
-└── src
-    ├── Application.cpp
-    ├── Application.h
-    ├── DigitFont.cpp
-    ├── DigitFont.h
-    ├── Display.cpp
-    ├── Display.h
-    ├── HelpScreen.cpp
-    ├── HelpScreen.h
-    ├── main.cpp
-    ├── Notification.cpp
-    ├── Notification.h
-    ├── Options.cpp
-    ├── Options.h
-    ├── Stopwatch.cpp
-    ├── Stopwatch.h
-    ├── Terminal.cpp
-    ├── Terminal.h
-    ├── TerminalLauncher.cpp
-    ├── TerminalLauncher.h
-    ├── TimeFormatter.cpp
-    └── TimeFormatter.h
-    
-```
+## Still missing, usefull or fun features
+- Ability to change colors
+- Animated background(?)
+- Add icon for notifications
+- Remove restriction minutes < 60 ; seconds < 60. Should allow for example: `tty-stopwatch -t 300m700s` and do the math
+- Add days to the mix (`tty-stopwatch -t 10d`)
 
-Each module has a single, focused responsibility: the timing model performs no
-I/O, terminal ownership lives solely in `Terminal`, and frame composition lives
-solely in `Display`.
 
