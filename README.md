@@ -79,7 +79,40 @@ compiled for.
 
 ---
 
-## Build dependencies
+## Install
+
+### Debian / Ubuntu / Related
+If in Debian, Ubuntu or Debian based distro in general:
+
+1. Go to [RELEASES](https://github.com/ljgonzalez1/tty-stopwatch/releases)
+2. Download de latest `*.deb` package matching your CPU architecture.
+3. Run `sudo dpkg -i tty-stopwatch_<VERSION>_<ARCHITECTURE>.deb`
+
+### The manual way... (other Linux distros and MacOS)
+1. Go to [RELEASES](https://github.com/ljgonzalez1/tty-stopwatch/releases)
+2. Download de latest binary matching your CPU architecture.
+3. Move the binary to where your binaries live `sudo mv tty-stopwatch<WHATEVER> /usr/local/bin/tty-stopwatch`
+
+---
+
+## Updating
+
+### Debian / Ubuntu / Related
+If in Debian, Ubuntu or Debian based distro in general:
+
+1. Go to [RELEASES](https://github.com/ljgonzalez1/tty-stopwatch/releases)
+2. Download de latest `*.deb` package matching your CPU architecture.
+3. Run `sudo dpkg -i tty-stopwatch_<NEW_VERSION>_<SAME_ARCHITECTURE>.deb`
+
+### The manual way... (other Linux distros and MacOS)
+1. Delete de old version `sudo rm /usr/local/bin/tty-stopwatch`
+2. Go to [RELEASES](https://github.com/ljgonzalez1/tty-stopwatch/releases)
+3. Download de latest binary matching your CPU architecture.
+4. Move the binary to where your binaries live `sudo mv tty-stopwatch<WHATEVER> /usr/local/bin/tty-stopwatch`
+
+---
+
+## Building: Build dependencies
 
 To **run** the binary you need nothing beyond the binary itself. The packages
 below are required only to **compile** it: a C++17 compiler and GNU make. No
