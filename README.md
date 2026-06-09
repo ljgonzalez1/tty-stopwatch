@@ -66,12 +66,11 @@ compiled for.
 ### In summary
 | OS | Architecture | Supported |
 |---|---|---|
-| Debian / Ubuntu | amd64, i386, arm64 | Yes |
-| Almost any Linux distro... | armhf | Not tested yet. Should be. |
-| Red Hat / Fedora / RHEL | amd64, i386, arm64 | Yes |
+| Debian / Ubuntu | amd64, i386, arm64, armhf | Yes |
+| Red Hat / Fedora / RHEL | amd64, i386, arm64, armhf | Yes |
 | Alpine | amd64, i386, arm64 | Yes |
-| Arch | amd64, i386, arm64 | Yes |
-| SUSE / OpenSUSE | amd64, i386, arm64 | Yes |
+| Arch | amd64, i386, arm64, armhf | Yes |
+| SUSE / OpenSUSE | amd64, i386, arm64, armhf | Yes |
 | MacOS | amd64 (the intel ones) | Not tested yet. Should be. |
 | MacOS | arm64 (M series) | Yes |
 | MacOS | i386 | Shouldn't. Worth trying if you have a 2006 or earlier device. |
