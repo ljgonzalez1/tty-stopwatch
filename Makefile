@@ -12,8 +12,10 @@
 #   make STATIC=1        Fully static binary (recommended on Alpine/musl).
 #   make PORTABLE=1      glibc build with the C/C++ runtime linked statically.
 #
-# Build variant (macOS):
+# Build variants (macOS):
 #   make MACOS_UNIVERSAL=1   Single universal binary (x86_64 + arm64).
+#   make MACOS_ARCH=x86_64   Thin binary for Intel only.
+#   make MACOS_ARCH=arm64    Thin binary for Apple Silicon only.
 #
 # Debian package (Linux, Debian-based hosts):
 #   make deb             Build dist/<pkg>_<version>_<arch>.deb for the host
@@ -21,11 +23,18 @@
 #                        Needs no root and only the `dpkg` package, which is
 #                        always present on Debian-based systems.
 #
+# macOS disk image (.dmg, macOS hosts only):
+#   make dmg             Universal .app inside a drag-to-install .dmg (Intel +
+#                        Apple Silicon in one image).
+#   make dmg-intel       Same, but a thin x86_64 (Intel) image.
+#   make dmg-arm64       Same, but a thin arm64 (Apple Silicon) image.
+#
 # A plain `make` with no variables auto-detects the host operating system and
 # compiles a native binary for the current OS and CPU architecture.
 #
-# Convenience phony targets `static`, `portable`, `macos-universal`, and `deb`
-# re-invoke make with the matching variable set or packaging steps.
+# Convenience phony targets `static`, `portable`, `macos-universal`, `deb`,
+# `dmg`, `dmg-intel`, and `dmg-arm64` re-invoke make with the matching
+# variables set or run the corresponding packaging steps.
 
 UNAME_S := $(shell uname -s)
 
@@ -59,6 +68,14 @@ ifeq ($(MACOS_UNIVERSAL),1)
   LDFLAGS  += -arch x86_64 -arch arm64 -mmacosx-version-min=11.0
 endif
 
+# --- macOS single-architecture binary ---------------------------------------
+# MACOS_ARCH=x86_64 or MACOS_ARCH=arm64 produces a thin binary for one slice,
+# used by the dmg-intel / dmg-arm64 targets.
+ifneq ($(MACOS_ARCH),)
+  CXXFLAGS += -arch $(MACOS_ARCH) -mmacosx-version-min=11.0
+  LDFLAGS  += -arch $(MACOS_ARCH) -mmacosx-version-min=11.0
+endif
+
 SRC_DIR := src
 OBJ_DIR := build
 BIN     := tty-stopwatch
@@ -69,18 +86,29 @@ DEPS    := $(OBJECTS:.o=.d)
 
 BINDIR  := $(DESTDIR)$(PREFIX)/bin
 
-# --- Debian package metadata ------------------------------------------------
+# --- Shared package metadata ------------------------------------------------
 PKG_NAME         := tty-stopwatch
 VERSION_UPSTREAM := 1.4.0
+DIST_DIR         := dist
+
+# --- Debian package metadata ------------------------------------------------
 DEB_REVISION     := 1
 DEB_VERSION      := $(VERSION_UPSTREAM)-$(DEB_REVISION)
 DEB_SECTION      := utils
 DEB_PRIORITY     := optional
 DEB_MAINTAINER   := ljgonzalez1 <luis.alejandro@ljgonzalez.cl>
 DEB_HOMEPAGE     := https://github.com/ljgonzalez1/tty-stopwatch
-DIST_DIR         := dist
 
-.PHONY: all clean run install uninstall static portable macos-universal deb
+# --- macOS .app / .dmg metadata ---------------------------------------------
+MACOS_APP_NAME   := TTY-Stopwatch
+MACOS_BUNDLE_ID  := cl.ljgonzalez.tty-stopwatch
+MACOS_VOL_NAME   := TTY Stopwatch
+MACOS_ICNS       := assets/logo/icns/TTY-Stopwatch.icns
+MACOS_PLIST_IN   := packaging/macos/Info.plist.in
+MACOS_BUNDLE_SH  := packaging/macos/bundle.sh
+
+.PHONY: all clean run install uninstall static portable macos-universal deb \
+        dmg dmg-intel dmg-arm64 macos-package
 
 all: $(BIN)
 
@@ -141,6 +169,40 @@ deb:
 	echo "Created $$debfile"; \
 	echo "  Install:  sudo apt install ./$$debfile"; \
 	echo "  Remove:   sudo apt remove $(PKG_NAME)"
+
+# --- macOS disk images ------------------------------------------------------
+# The three user-facing targets only differ in which architecture they build;
+# each re-invokes the shared `macos-package` recipe with the right compiler
+# arch variables and a label for the output file name. Architecture flags
+# change the object files, so `macos-package` starts from a clean build.
+dmg:
+	@$(MAKE) --no-print-directory macos-package MACOS_UNIVERSAL=1 DMG_LABEL=universal
+
+dmg-intel:
+	@$(MAKE) --no-print-directory macos-package MACOS_ARCH=x86_64 DMG_LABEL=x86_64
+
+dmg-arm64:
+	@$(MAKE) --no-print-directory macos-package MACOS_ARCH=arm64 DMG_LABEL=arm64
+
+# Internal: compile the binary for the selected arch and hand it to the
+# packaging script, which assembles the .app, ad-hoc signs it, and wraps it in
+# a drag-to-install .dmg under $(DIST_DIR).
+macos-package:
+	@command -v hdiutil >/dev/null 2>&1 || { echo "make $(DMG_LABEL:%=dmg): macOS-only target (hdiutil not found)." >&2; exit 1; }
+	@set -e; \
+	rm -rf "$(OBJ_DIR)" "$(BIN)"; \
+	$(MAKE) --no-print-directory $(BIN); \
+	mkdir -p "$(DIST_DIR)"; \
+	dmg="$(DIST_DIR)/$(PKG_NAME)_$(VERSION_UPSTREAM)_$(DMG_LABEL).dmg"; \
+	BIN="$(BIN)" \
+	APP_NAME="$(MACOS_APP_NAME)" \
+	BUNDLE_ID="$(MACOS_BUNDLE_ID)" \
+	VERSION="$(VERSION_UPSTREAM)" \
+	ICNS="$(MACOS_ICNS)" \
+	PLIST_IN="$(MACOS_PLIST_IN)" \
+	VOL_NAME="$(MACOS_VOL_NAME)" \
+	DMG_PATH="$$dmg" \
+	/bin/sh "$(MACOS_BUNDLE_SH)"
 
 run: $(BIN)
 	./$(BIN)
