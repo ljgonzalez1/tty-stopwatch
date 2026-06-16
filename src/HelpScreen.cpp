@@ -35,8 +35,9 @@ void heading(std::FILE* out, const Palette& p, const char* text) {
     std::fprintf(out, "%s%s%s\n", p.heading, text, p.reset);
 }
 
-// Renders one option row with the short and long forms aligned in a
-// uniform column. The description starts at column 30.
+// Renders one option row with the short and long forms aligned in a uniform
+// column. Alignment math uses the visible width only, so the row is rebuilt
+// piece by piece rather than colorized in place.
 void option(std::FILE* out, const Palette& p,
             const char* shortf, const char* longf,
             const char* metavar, const char* desc) {
@@ -50,8 +51,6 @@ void option(std::FILE* out, const Palette& p,
     const int len   = static_cast<int>(std::strlen(left));
     const int pad   = (len < width) ? (width - len) : 1;
 
-    // Colorize. We rebuild the row piece by piece so the alignment math
-    // is based on the visible width only.
     if (metavar && *metavar) {
         std::fprintf(out, "    %s%s%s, %s%s%s %s%s%s%*s%s\n",
                      p.flag, shortf, p.reset,
@@ -66,7 +65,7 @@ void option(std::FILE* out, const Palette& p,
     }
 }
 
-} // namespace
+}
 
 void print(std::FILE* out, bool color) {
     const Palette p = make_palette(color, out);
@@ -146,5 +145,5 @@ void print(std::FILE* out, bool color) {
                  p.example, p.reset, p.example, p.reset, p.example, p.reset);
 }
 
-} // namespace HelpScreen
-} // namespace stopwatch
+}
+}
