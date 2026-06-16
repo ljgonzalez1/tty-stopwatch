@@ -9,46 +9,35 @@
 
 namespace stopwatch {
 
-/**
- * @brief Top-level coordinator.
- *
- * Owns the Terminal session, the Display, and the Stopwatch timing model, and
- * runs the input/render loop until the user exits or a countdown completes.
- *
- * Both countdown variants are normalised at start-up into a single effective
- * duration measured against the monotonic clock:
- *   - --timer uses the duration parsed from the command line;
- *   - --until computes, from the system wall clock, the time remaining to the
- *     next occurrence of the requested 24-hour time-of-day.
- *
- * The loop separates measurement from presentation. The elapsed time is read
- * at full precision from the Stopwatch, but a frame is only emitted when the
- * value visible on screen actually changes (a new tenth of a second, a state
- * change, or a new wall-clock second when the clock bar is shown). That keeps
- * CPU usage low while the displayed time stays smooth.
- */
+// Top-level coordinator: owns the Terminal, Display and Stopwatch and runs the
+// input/render loop until the user exits or a countdown completes.
+//
+// Both --timer and --until are normalised at start-up into a single effective
+// countdown measured against the monotonic clock. The loop separates
+// measurement from presentation: elapsed time is read at full precision, but a
+// frame is emitted only when the visible value changes (a new tenth, a state
+// change, or a new wall-clock second when the clock bar is shown), keeping idle
+// CPU low while the displayed time stays smooth.
 class Application {
 public:
     explicit Application(const Options& opts);
 
-    // Runs the main loop. Returns a process exit code (currently always 0,
-    // reserved for future use).
     int run();
 
-    // Whatever should be written to stdout once the terminal session is gone.
-    // For countdowns this is either the original duration (natural
-    // completion) or the elapsed time so far (interrupted).
+    // What to write to stdout once the session is gone. For countdowns this is
+    // the original duration (natural completion) or the elapsed time so far
+    // (interrupted).
     std::chrono::steady_clock::duration final_time() const;
 
 private:
     using Duration = std::chrono::steady_clock::duration;
 
-    // Identifies the currently visible frame. Two equal keys render
-    // identically, so a frame is only redrawn when the key changes.
+    // Identifies the currently visible frame; equal keys render identically, so
+    // a frame is redrawn only when the key changes.
     struct FrameKey {
         long long        tick;       // tenth-of-second bucket, or saver bucket
         Stopwatch::State state;
-        long long        wall_sec;   // only varies when the clock bar is shown
+        long long        wall_sec;   // varies only when the clock bar is shown
         bool operator!=(const FrameKey& o) const {
             return tick != o.tick || state != o.state || wall_sec != o.wall_sec;
         }
@@ -70,4 +59,4 @@ private:
     bool      running_;
 };
 
-} // namespace stopwatch
+}

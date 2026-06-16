@@ -10,17 +10,14 @@
 namespace stopwatch {
 namespace {
 
-constexpr int kCtrlC = 3;  // ASCII ETX, delivered as a byte because of raw mode
+constexpr int kCtrlC = 3;  // ASCII ETX, delivered as a byte under raw mode
 
-// Loop policy. Input is polled often enough to keep controls responsive; the
-// screen is repainted at the displayed granularity (a tenth of a second) in
-// normal mode, and slowly in screensaver mode.
-constexpr int       kInputPollMs        = 50;
-constexpr long long kTenthMs            = 100;
-constexpr long long kScreensaverMs      = 2000;
+constexpr int       kInputPollMs   = 50;
+constexpr long long kTenthMs       = 100;
+constexpr long long kScreensaverMs = 2000;
 
-// SIGTERM/SIGHUP set this flag; the loop polls it. SIGINT arrives as the byte
-// 0x03 thanks to raw mode and is handled inline.
+// Set by SIGTERM/SIGHUP and polled by the loop. SIGINT instead arrives as the
+// byte 0x03 (raw mode) and is handled inline.
 volatile std::sig_atomic_t g_should_exit = 0;
 
 void term_handler(int) { g_should_exit = 1; }
@@ -38,10 +35,9 @@ bool is_printable_ascii(int key) {
     return key >= 32 && key <= 126;
 }
 
-// Computes the monotonic-clock duration remaining until the next occurrence
-// of the given 24-hour wall-clock time. The result is anchored to the real
-// clock with sub-second precision, then run as a steady-clock countdown so it
-// is immune to subsequent wall-clock adjustments.
+// Monotonic-clock duration until the next occurrence of the given wall-clock
+// time. Anchored to the real clock with sub-second precision, then run as a
+// steady-clock countdown so it is immune to later wall-clock adjustments.
 std::chrono::steady_clock::duration
 duration_until(int hour, int minute, int second) {
     struct timespec now_ts{};
@@ -58,9 +54,8 @@ duration_until(int hour, int minute, int second) {
     target.tm_isdst  = -1;  // let mktime resolve DST for the target instant
     std::time_t when = std::mktime(&target);
 
-    // If that instant is not strictly in the future, target tomorrow. Rebuild
-    // the broken-down time with the day advanced so DST and month rollovers
-    // are handled correctly by mktime.
+    // Not strictly in the future: target tomorrow, rebuilding the broken-down
+    // time so mktime handles DST and month rollovers.
     if (when <= now) {
         std::tm tomorrow  = local;
         tomorrow.tm_mday += 1;
@@ -93,7 +88,6 @@ Application::Application(const Options& opts)
     install_signal_handlers();
 }
 
-// Normalises --timer and --until into a single effective countdown duration.
 void Application::resolve_countdown() {
     if (opts_.timer_mode) {
         timer_active_ = true;
@@ -110,7 +104,7 @@ void Application::resolve_countdown() {
 
 int Application::run() {
     resolve_countdown();
-    watch_.start();  // auto-start as required
+    watch_.start();
 
     FrameKey last_key{LLONG_MIN, Stopwatch::State::Paused, LLONG_MIN};
 
@@ -123,7 +117,6 @@ int Application::run() {
             running_ = false;
         }
 
-        // Countdown completion is checked exactly once.
         if (timer_active_ && !timer_completed_ &&
             watch_.elapsed() >= effective_) {
             timer_completed_ = true;
@@ -131,7 +124,6 @@ int Application::run() {
             running_ = false;
         }
 
-        // Measurement is exact; presentation is throttled to visible changes.
         const Duration shown = display_time();
         const FrameKey key_now = compute_frame_key(shown);
         if (key_now != last_key || !running_) {
@@ -173,16 +165,14 @@ Application::compute_frame_key(Duration shown) const {
 }
 
 void Application::handle_input(int key) {
-    // Universal exit keys, valid in every mode.
     if (key == 'q' || key == 'Q' || key == kCtrlC) {
         running_ = false;
         return;
     }
 
     if (opts_.quit_on_press) {
-        // In screensaver / quit-on-press mode any ordinary key dismisses the
-        // program; non-character keys are ignored (escape sequences are
-        // already filtered out by the Terminal).
+        // Any ordinary key dismisses the program; escape sequences are already
+        // filtered out by the Terminal.
         if (is_printable_ascii(key) || key == '\n' || key == '\r') {
             running_ = false;
         }
@@ -212,4 +202,4 @@ std::chrono::steady_clock::duration Application::final_time() const {
     return watch_.elapsed();
 }
 
-} // namespace stopwatch
+}
