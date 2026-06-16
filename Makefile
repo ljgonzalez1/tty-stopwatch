@@ -71,7 +71,7 @@ BINDIR  := $(DESTDIR)$(PREFIX)/bin
 
 # --- Debian package metadata ------------------------------------------------
 PKG_NAME         := tty-stopwatch
-VERSION_UPSTREAM := 1.1.2
+VERSION_UPSTREAM := 1.4.0
 DEB_REVISION     := 1
 DEB_VERSION      := $(VERSION_UPSTREAM)-$(DEB_REVISION)
 DEB_SECTION      := utils
