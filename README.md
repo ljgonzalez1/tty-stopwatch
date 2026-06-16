@@ -64,16 +64,18 @@ compiled for.
 
 
 ### In summary
+
+#### Compatibility acording to my tests by now:
+
 | OS | Architecture | Supported |
 |---|---|---|
-| Debian / Ubuntu | amd64, i386, arm64, armhf | Yes |
-| Red Hat / Fedora / RHEL | amd64, i386, arm64, armhf | Yes |
-| Alpine | amd64, i386, arm64 | Yes |
-| Arch | amd64, i386, arm64, armhf | Yes |
-| SUSE / OpenSUSE | amd64, i386, arm64, armhf | Yes |
-| MacOS | amd64 (the intel ones) | Not tested yet. Should be. |
-| MacOS | arm64 (M series) | Yes |
-| MacOS | i386 | Shouldn't. Worth trying if you have a 2006 or earlier device. |
+| Debian / Ubuntu | `amd64`, `i386`, `arm64`, `armhf` | Yes (binary and `*.deb`) |
+| Red Hat / Fedora / RHEL | `amd64`, `i386` | Yes |
+| Alpine | `amd64`, `i386` | Yes |
+| Arch | `amd64`, `i386` | Yes |
+| SUSE / OpenSUSE | `amd64`, `i386` | Yes |
+| MacOS | Apple Silicone and Intel CPUs | Yes |
+| MacOS | `i386` | Shouldn't. Worth trying if you have a 2006 or earlier device. |
 | Windows (Windows NT) | Any | No |
 
 ---
