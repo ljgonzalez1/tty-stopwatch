@@ -1,3 +1,9 @@
 stopwatch
 tty-stopwatch
 build
+assets/logo/icns/TTY-Stopwatch.iconset/
+
+**/*.DS_Store
+**/.DS_Store
+*.DS_Store
+.DS_Store
