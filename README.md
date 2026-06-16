@@ -74,7 +74,7 @@ compiled for.
 | Alpine | `amd64`, `i386` | Yes |
 | Arch | `amd64`, `i386` | Yes |
 | SUSE / OpenSUSE | `amd64`, `i386` | Yes |
-| MacOS | Apple Silicone and Intel CPUs | Yes |
+| MacOS | Apple Silicon and Intel CPUs | Yes |
 | MacOS | `i386` | Shouldn't. Worth trying if you have a 2006 or earlier device. |
 | Windows (Windows NT) | Any | No |
 
