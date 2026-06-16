@@ -20,9 +20,9 @@ struct DigitGlyph {
 class DigitFont {
 public:
     static const DigitGlyph& digit(int d);   // 0..9
-    static const DigitGlyph& colon();        // separator between fields
-    static const DigitGlyph& dot();          // separator before centiseconds
+    static const DigitGlyph& colon();
+    static const DigitGlyph& dot();
     static const DigitGlyph& blank();        // same width as colon, but empty
 };
 
-} // namespace stopwatch
+}

@@ -16,31 +16,20 @@ namespace {
 // Logical colour slots, mapped to ANSI SGR codes at serialisation time.
 enum class Color : std::uint8_t { Default = 0, Green, Yellow, Cyan };
 
-// Per-cell attribute flags (bitmask).
 constexpr std::uint8_t kAttrReverse = 1u << 0;
 constexpr std::uint8_t kAttrBold    = 1u << 1;
 constexpr std::uint8_t kAttrDim     = 1u << 2;
 
-/**
- * @brief A single rendered character together with its visual attributes.
- *
- * This is a plain data aggregate; it carries no behaviour.
- */
 struct Cell {
     char         ch    = ' ';
     std::uint8_t attr  = 0;
     Color        color = Color::Default;
 };
 
-/**
- * @brief An off-screen grid of cells that serialises to ANSI escape codes.
- *
- * The buffer is filled by free drawing helpers and then converted into one
- * escape-coded string. Serialisation repaints every column of every row and
- * positions the cursor explicitly per row, so a previous frame is always
- * fully overwritten without an intervening screen clear (and therefore
- * without flicker).
- */
+// An off-screen grid of cells that serialises to ANSI escape codes.
+// Serialisation repaints every column of every row and positions the cursor
+// per row, so a previous frame is always fully overwritten without a screen
+// clear (and therefore without flicker).
 class ScreenBuffer {
 public:
     ScreenBuffer(int rows, int cols)
@@ -59,8 +48,6 @@ public:
         cell.color = color;
     }
 
-    // Writes a string starting at (r, c), centred horizontally is handled by
-    // the caller. Characters falling outside the grid are clipped.
     void put_text(int r, int c, const char* text,
                   std::uint8_t attr, Color color) {
         for (int i = 0; text[i] != '\0'; ++i) {
@@ -71,7 +58,7 @@ public:
     std::string serialize(bool use_color) const {
         std::string out;
         out.reserve(static_cast<std::size_t>(rows_) * (cols_ + 16));
-        out += "\x1b[H";  // home
+        out += "\x1b[H";  // cursor home
 
         std::uint8_t cur_attr  = 0;
         Color        cur_color = Color::Default;
@@ -132,20 +119,19 @@ Color color_for(Stopwatch::State state) {
     return state == Stopwatch::State::Running ? Color::Green : Color::Yellow;
 }
 
-// Zero-pads on the left so the field is at least two characters wide.
 std::string pad2(long long value) {
     std::string s = std::to_string(value);
     if (s.size() < 2) s.insert(s.begin(), '0');
     return s;
 }
 
-// Builds the token sequence for the big clock. The fractional part is shown
-// to a single decimal (tenths), derived from the centisecond field.
+// Builds the token sequence for the big clock. The fractional part is shown to
+// a single decimal (tenths), derived from the centisecond field.
 std::vector<Token> build_tokens(const Options& opts,
                                 std::chrono::steady_clock::duration t) {
     std::vector<Token> out;
     const TimeParts p      = decompose(t);
-    const int       tenths = p.centiseconds / 10;  // one displayed decimal
+    const int       tenths = p.centiseconds / 10;
 
     auto push_digit = [&](int d) { out.push_back({Token::Type::Digit, d}); };
     auto push_string_digits = [&](const std::string& s) {
@@ -196,8 +182,7 @@ const DigitGlyph& glyph_for(const Token& tok, bool blink_off) {
     return DigitFont::blank();
 }
 
-// Total width of the token sequence; independent of blink state because the
-// blank colon has the same width as the visible colon.
+// Independent of blink state because the blank colon matches the colon width.
 int sequence_width(const std::vector<Token>& tokens) {
     int w = 0;
     for (std::size_t i = 0; i < tokens.size(); ++i) {
@@ -240,8 +225,8 @@ void draw_status(ScreenBuffer& buf, Stopwatch::State state, int row) {
     draw_centered(buf, row, label, kAttrBold, color_for(state));
 }
 
-// System clock in 24-hour format. No localisation: HH:MM:SS comes straight
-// from the broken-down local time, so output is identical across locales.
+// System clock in 24-hour HH:MM:SS, taken straight from broken-down local time
+// so output is identical across locales.
 void draw_clock(ScreenBuffer& buf, int row) {
     std::time_t now = std::time(nullptr);
     std::tm     tm_local{};
@@ -299,8 +284,8 @@ void Display::render(std::chrono::steady_clock::duration t,
     const int width  = sequence_width(tokens);
     const int height = DigitGlyph::kRows;
 
-    // Need room for the big clock plus the status / help / optional clock
-    // bars. Otherwise fall back to a single centred line of plain text.
+    // Need room for the big clock plus the status / help / optional clock bars;
+    // otherwise fall back to a single centred line of plain text.
     const int min_rows = height + 6 + (opts_.show_clock ? 2 : 0);
     if (size.cols < width + 2 || size.rows < min_rows) {
         draw_small(buf, opts_, t, state);
@@ -321,4 +306,4 @@ void Display::render(std::chrono::steady_clock::duration t,
     terminal_.write_frame(buf.serialize(use_color_));
 }
 
-} // namespace stopwatch
+}

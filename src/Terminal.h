@@ -73,4 +73,4 @@ private:
     struct termios saved_termios_;
 };
 
-} // namespace stopwatch
+}

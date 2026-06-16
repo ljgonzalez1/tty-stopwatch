@@ -83,5 +83,5 @@ void exec_in_terminal(int argc, char* argv[]) {
 #endif
 }
 
-} // namespace TerminalLauncher
-} // namespace stopwatch
+}
+}

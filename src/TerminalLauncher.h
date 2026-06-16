@@ -13,5 +13,5 @@ bool has_terminal();
 // this is a no-op because the program is invoked from Terminal.app.
 void exec_in_terminal(int argc, char* argv[]);
 
-} // namespace TerminalLauncher
-} // namespace stopwatch
+}
+}

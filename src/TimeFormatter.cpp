@@ -38,4 +38,4 @@ std::string format_canonical(std::chrono::steady_clock::duration d) {
     return std::string(buf);
 }
 
-} // namespace stopwatch
+}

@@ -52,4 +52,4 @@ public:
     static Options parse(int argc, char* argv[]);
 };
 
-} // namespace stopwatch
+}

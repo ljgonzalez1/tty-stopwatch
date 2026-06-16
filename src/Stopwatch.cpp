@@ -40,4 +40,4 @@ Stopwatch::Duration Stopwatch::elapsed() const noexcept {
     return accumulated_;
 }
 
-} // namespace stopwatch
+}

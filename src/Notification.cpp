@@ -14,9 +14,8 @@ namespace {
 void run_silent(const char* program, const char* const argv[]) {
     pid_t pid = fork();
     if (pid == 0) {
-        // Detach from controlling terminal output so that a missing
-        // dependency doesn't leak "command not found" onto the user's
-        // screen mid-render.
+        // Silence the child so a missing notifier can't leak "command not
+        // found" onto the rendered screen.
         int dn = open("/dev/null", O_WRONLY);
         if (dn >= 0) {
             dup2(dn, STDOUT_FILENO);
@@ -32,8 +31,7 @@ void run_silent(const char* program, const char* const argv[]) {
 }
 
 void terminal_bell() {
-    // Write to /dev/tty rather than stdout/stderr so the bell is audible
-    // even when the program's stdout is being piped somewhere else.
+    // Written to /dev/tty so it is audible even when stdout is piped elsewhere.
     if (FILE* tty = std::fopen("/dev/tty", "w")) {
         std::fputc('\a', tty);
         std::fflush(tty);
@@ -44,8 +42,10 @@ void terminal_bell() {
     }
 }
 
-} // namespace
+}
 
+// The bell always fires; the two notifiers are attempted in turn, and the one
+// absent on the host (osascript on Linux, notify-send on macOS) fails silently.
 void send(const std::string& title, const std::string& body) {
     terminal_bell();
 
@@ -73,5 +73,5 @@ void send(const std::string& title, const std::string& body) {
     }
 }
 
-} // namespace Notification
-} // namespace stopwatch
+}
+}

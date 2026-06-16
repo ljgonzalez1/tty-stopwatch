@@ -241,4 +241,4 @@ Options OptionParser::parse(int argc, char* argv[]) {
     return opts;
 }
 
-} // namespace stopwatch
+}
