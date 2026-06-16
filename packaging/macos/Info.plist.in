@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Info.plist template for the tty-stopwatch macOS .app bundle.
+
+  Placeholders (@NAME@) are substituted by packaging/macos/bundle.sh from
+  values defined once in the Makefile, so the version and identifier never
+  drift out of sync with the rest of the project.
+-->
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>@APP_NAME@</string>
+    <key>CFBundleDisplayName</key>
+    <string>TTY Stopwatch</string>
+    <key>CFBundleIdentifier</key>
+    <string>@BUNDLE_ID@</string>
+    <key>CFBundleVersion</key>
+    <string>@VERSION@</string>
+    <key>CFBundleShortVersionString</key>
+    <string>@VERSION@</string>
+    <key>CFBundleExecutable</key>
+    <string>@EXECUTABLE_NAME@</string>
+    <key>CFBundleIconFile</key>
+    <string>@ICON_FILE@</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>11.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>LSBackgroundOnly</key>
+    <false/>
+    <!-- Shown once, the first time the app asks to drive Terminal.app. -->
+    <key>NSAppleEventsUsageDescription</key>
+    <string>TTY Stopwatch opens a Terminal window to display the big-digit stopwatch.</string>
+</dict>
+</plist>
