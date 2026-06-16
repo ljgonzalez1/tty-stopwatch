@@ -12,3 +12,4 @@ void print(std::FILE* out, bool color);
 
 } // namespace HelpScreen
 } // namespace stopwatch
+

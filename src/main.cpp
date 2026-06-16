@@ -33,10 +33,10 @@ int main(int argc, char* argv[]) {
         return EXIT_SUCCESS;
     }
 
-    // When invoked without any terminal at all (e.g. double-clicked from a
-    // file manager on Linux), re-exec inside the default terminal emulator.
-    // On macOS the program is always run from a terminal, so
-    // exec_in_terminal() is a no-op there.
+    // When invoked without any terminal at all (double-clicked from a file
+    // manager on Linux, or launched from its .app bundle on macOS), re-exec
+    // inside a terminal: a graphical terminal emulator on Linux, Terminal.app
+    // on macOS. The call only returns if no terminal could be launched.
     if (!TerminalLauncher::has_terminal()) {
         TerminalLauncher::exec_in_terminal(argc, argv);
         std::fprintf(stderr,
@@ -67,3 +67,4 @@ int main(int argc, char* argv[]) {
     }
     return exit_code;
 }
+
