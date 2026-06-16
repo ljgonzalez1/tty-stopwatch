@@ -8,21 +8,13 @@
 
 namespace stopwatch {
 
-/**
- * @brief Renders the (display_time, state) pair into terminal frames.
- *
- * Display contains no terminal-ownership logic of its own: it borrows a
- * Terminal for sizing and output and concentrates purely on composing a
- * frame. Frames are built into an off-screen cell buffer and serialised to a
- * single ANSI string, so each refresh is a single write() and never flickers.
- *
- * The on-screen clock shows time to a tenth of a second (one decimal). The
- * underlying timing model keeps full centisecond precision; the extra digit
- * is only revealed in the program's final stdout output. Decoupling the
- * displayed precision from the measured precision lets the caller refresh the
- * screen at a low rate (driven by tenth-of-a-second changes) while the
- * measurement itself stays exact, which keeps idle CPU usage minimal.
- */
+// Renders the (display_time, state) pair into terminal frames.
+//
+// Frames are built into an off-screen cell buffer and serialised to a single
+// ANSI string, so each refresh is one write() and never flickers. The screen
+// shows tenths of a second while the underlying model keeps full centisecond
+// precision; decoupling displayed from measured precision lets the caller
+// refresh at a low rate while measurement stays exact.
 class Display {
 public:
     Display(const Options& opts, const Terminal& terminal);
@@ -32,8 +24,6 @@ public:
     Display(Display&&)                 = delete;
     Display& operator=(Display&&)      = delete;
 
-    /// Composes one frame for the given displayed duration and state and
-    /// writes it to the terminal.
     void render(std::chrono::steady_clock::duration display_time,
                 Stopwatch::State state);
 
@@ -43,4 +33,4 @@ private:
     bool            use_color_;
 };
 
-} // namespace stopwatch
+}
