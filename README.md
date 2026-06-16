@@ -431,5 +431,3 @@ there is always at least one signal.
 - Add icon for notifications
 - Remove restriction minutes < 60 ; seconds < 60. Should allow for example: `tty-stopwatch -t 300m700s` and do the math
 - Add days to the mix (`tty-stopwatch -t 10d`)
-
-
