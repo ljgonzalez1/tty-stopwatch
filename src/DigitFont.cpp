@@ -5,9 +5,8 @@
 namespace stopwatch {
 namespace {
 
-// Each digit is 5 columns wide. The bitmaps are designed to mimic seven-
-// segment display digits while still reading nicely with reverse-video
-// blocks.
+// Bitmaps mimic seven-segment digits while reading cleanly as reverse-video
+// blocks; each digit is 5 columns wide.
 constexpr DigitGlyph kDigits[10] = {
     {{0b11111, 0b10001, 0b10001, 0b10001, 0b11111}, 5}, // 0
     {{0b00100, 0b00100, 0b00100, 0b00100, 0b00100}, 5}, // 1
@@ -21,13 +20,13 @@ constexpr DigitGlyph kDigits[10] = {
     {{0b11111, 0b10001, 0b11111, 0b00001, 0b11111}, 5}, // 9
 };
 
-// Separators are 3 columns wide and share their width with `blank` so the
-// big clock keeps a constant overall width while blinking.
+// Separators share the blank's 3-column width so the clock keeps a constant
+// overall width while blinking.
 constexpr DigitGlyph kColon = {{0b000, 0b010, 0b000, 0b010, 0b000}, 3};
 constexpr DigitGlyph kDot   = {{0b000, 0b000, 0b000, 0b000, 0b010}, 3};
 constexpr DigitGlyph kBlank = {{0b000, 0b000, 0b000, 0b000, 0b000}, 3};
 
-} // namespace
+}
 
 const DigitGlyph& DigitFont::digit(int d) {
     if (d < 0 || d > 9) {
@@ -40,4 +39,4 @@ const DigitGlyph& DigitFont::colon() { return kColon; }
 const DigitGlyph& DigitFont::dot()   { return kDot;   }
 const DigitGlyph& DigitFont::blank() { return kBlank; }
 
-} // namespace stopwatch
+}
