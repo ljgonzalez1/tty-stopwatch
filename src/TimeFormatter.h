@@ -23,4 +23,4 @@ long long total_seconds_count(std::chrono::steady_clock::duration d);
 // Hours always occupy at least two digits and grow naturally beyond 99.
 std::string format_canonical(std::chrono::steady_clock::duration d);
 
-} // namespace stopwatch
+}

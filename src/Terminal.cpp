@@ -156,4 +156,4 @@ void Terminal::write_frame(const std::string& frame) const {
     }
 }
 
-} // namespace stopwatch
+}
